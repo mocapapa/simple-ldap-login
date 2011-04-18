@@ -1,6 +1,6 @@
 <?php
 
-class MModel extends CFormModel
+class MLdap extends CFormModel
 {
 	public $attributes;
 
