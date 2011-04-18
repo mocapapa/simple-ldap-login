@@ -98,11 +98,11 @@ table.dataGrid th
 <table class="dataGrid">
   <tr>
     <th><?php echo 'Id'; ?></th>
-    <th><?php echo 'Account'; ?></th>
-    <th><?php echo 'Name'; ?></th>
-    <th><?php echo 'E-mail address'; ?></th>
-    <th><?php echo 'Profile'; ?></th>
-    <th><?php echo 'TEL'; ?></th>
+    <th><?php echo 'アカウント'; ?></th>
+    <th><?php echo '氏名'; ?></th>
+    <th><?php echo 'メールアドレス'; ?></th>
+    <th><?php echo '所属'; ?></th>
+    <th><?php echo '内線'; ?></th>
   </tr>
 <?php foreach($users as $user): ?>
   <tr class="<?php echo $i++%2?'even':'odd';?>">

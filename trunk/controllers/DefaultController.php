@@ -27,49 +27,73 @@ class DefaultController extends Controller
 	public function actionIndex()
 	{
 		$form=new MLoginForm;
-		$previousStatus = 'login';
 
 		// collect user input data
 		if(isset($_POST['MLoginForm']))
 		{
 			$previousStatus = isset($_POST['MLoginForm']['passwordRepeat'])? 'register' : 'login';
-			
 			$form->scenario='login';
 			$form->attributes = $_POST['MLoginForm'];
 
-			if($form->validate() && !$form->errorCode) {
-			  // login OK
-				$this->redirect(Yii::app()->user->returnUrl);
-			  
-			} else if ($form->errorCode == MUserIdentity::USER_TO_BE_REGISTERED) {
-			  // no user found
-				if ($previousStatus == 'login') {
+			if ($previousStatus == 'login') {
+			  // login
+
+				if($form->validate() && !$form->errorCode) {
+				  // login OK
+
+					$user=MUser::model()->find('LOWER(username)=?',array(strtolower($form->username)));
+					if ($user->attributes['jn'] == null) {
+					  // if no jn
+						$this->state = self::REGISTRATION_STATE;
+
+					} else {
+						$this->redirect(Yii::app()->user->returnUrl);
+					}
+				} else if ($form->errorCode == MUserIdentity::USER_TO_BE_REGISTERED) {
+				  // no user found
 					$this->state = self::REGISTRATION_STATE;
 
-				} else {
+				}
+			} else {
+			  // register
+				$getInfo = 0;
+				foreach ($_POST as $key=>$val) {
+					if ($val == 'Get info') $getInfo = true;
+				}
+				
+				if ($getInfo) {
+				  // information query from JN
 					$model = new MLdap;
-
-					$getInfo = 0;
-					foreach ($_POST as $key=>$val) {
-						if ($val == 'Get info') $getInfo = true;
-					}
 					$model->attributes = $_POST['MLoginForm'];
 
-					if ($getInfo) {
-					  // information query from JN
-						$info = $this->getCachedLdap($model->attributes['jn']);
-						$model = $this->processModel($info, $model);
-						$form->attributes = $model->attributes;
-						$form->email = $model->attributes['mail'];
-						$form->profile = $model->attributes['abbr'];
-
-						$this->state = self::REGISTRATION_STATE;
+					$info = $this->getCachedLdap($model->attributes['jn']);
+					$model = $this->processModel($info, $model);
+					$form->attributes = $model->attributes;
+					$form->email = $model->attributes['mail'];
+					$form->profile = $model->attributes['abbr'];
+					
+					$this->state = self::REGISTRATION_STATE;
 						
-					} else {
-					  // submit for registration
-						$form->scenario='register';
+				} else {
+				  // submit for registration
+					$form->scenario='register';
+					if($form->validate()) {
+						$user=MUser::model()->find('LOWER(username)=?',array(strtolower($form->username)));
 
-						if($form->validate()) {
+						if (isset($user->username)) {
+						  // update
+							$duration=$form->rememberMe ? 3600*24*30 : 0; // 30 days
+							$user->attributes = $form->attributes;
+							$user->password = md5($user->password);
+							$user->update();
+							
+							$identity = new MUserIdentity($form->username,$form->password);
+							$identity->authenticate();
+							Yii::app()->user->login($identity, $duration);
+							
+							$this->redirect(Yii::app()->user->returnUrl);
+						} else {
+						  // save
 							$duration=$form->rememberMe ? 3600*24*30 : 0; // 30 days
 							$user = new MUser;
 							$user->attributes = $form->attributes;
@@ -79,20 +103,14 @@ class DefaultController extends Controller
 							$identity = new MUserIdentity($form->username,$form->password);
 							$identity->authenticate();
 							Yii::app()->user->login($identity, $duration);
-					    
+							
 							$this->redirect(Yii::app()->user->returnUrl);
-						} else {
-						  // password error
-						  $this->state = self::REGISTRATION_STATE;
 						}
+						
+					} else {
+					  // password error
+					  $this->state = self::REGISTRATION_STATE;
 					}
-				}
-			} else {
-			  // password error
-				if ($previousStatus == 'login') {
-					$this->state = self::LOGIN_STATE;
-				} else {
-					$this->state = self::REGISTRATION_STATE;
 				}
 			}
 		}

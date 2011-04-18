@@ -35,7 +35,7 @@ class MLoginForm extends CFormModel
 		       array('passwordRepeat', 'compare', 'compareAttribute'=>'password', 'on'=>'register'),
 		       array('email', 'email'),
 		       array('rememberMe, passwordRepeat, jn, cn, title, intel, profile', 'safe'),
-		       );
+		);
 	}
 
 	/**
@@ -44,6 +44,15 @@ class MLoginForm extends CFormModel
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
+			'username' => 'ユーザ名',
+			'password' => 'パスワード',
+			'jn' => '従業員番号',
+			'cn' => '氏名',
+			'title' => '役職',
+			'email' => 'Email',
+			'intel' => '内線',
+			'profile' => '所属',
 			'rememberMe'=>'Remember me next time',
 		);
 	}
