@@ -39,7 +39,7 @@ class MUser extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('username, password, jn, cn, title, email, intel, profile', 'required'),
+			array('username, password, jn, cn, email, intel, profile', 'required'),
 			array('username, password, jn, cn, title, email, intel, profile', 'length', 'max'=>128),
 		);
 	}
@@ -51,14 +51,14 @@ class MUser extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'username' => 'Username',
-			'password' => 'Password',
-			'jn' => 'Jn',
-			'cn' => 'Cn',
-			'title' => 'Title',
+			'username' => 'ユーザ名',
+			'password' => 'パスワード',
+			'jn' => '従業員番号',
+			'cn' => '氏名',
+			'title' => '役職',
 			'email' => 'Email',
-			'intel' => 'Intel',
-			'profile' => 'Profile',
+			'intel' => '内線',
+			'profile' => '所属',
 		);
 	}
 }
