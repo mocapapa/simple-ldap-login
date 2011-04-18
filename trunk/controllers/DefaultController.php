@@ -47,7 +47,7 @@ class DefaultController extends Controller
 					$this->state = self::REGISTRATION_STATE;
 
 				} else {
-					$model = new MModel;
+					$model = new MLdap;
 
 					$getInfo = 0;
 					foreach ($_POST as $key=>$val) {
@@ -137,7 +137,7 @@ class DefaultController extends Controller
 			$sr=ldap_search($ds, "", "employeenumber=$key");
 			$info = ldap_get_entries($ds, $sr);
 			ldap_close($ds);
-			Yii::app()->cache->set($key, $info, 3600*24*91.25); // 3 month
+			Yii::app()->cache->set($key, $info, 3600*24); // 1 day
 		}
 		return $info;
 	}
