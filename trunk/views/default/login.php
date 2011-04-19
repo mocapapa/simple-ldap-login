@@ -36,7 +36,7 @@ You will be registered if you have not been registered yet.
 <div class="row">
 <?php echo CHtml::activeLabel($form,'jn'); ?>
 <?php echo CHtml::activeTextField($form,'jn') ?>
-<?php echo CHtml::submitButton('Get info') ?>
+<?php echo CHtml::submitButton(Yii::app()->params['getInfo']) ?>
 </div>
 
 <div class="row">
