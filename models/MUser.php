@@ -56,7 +56,7 @@ class MUser extends CActiveRecord
 			'jn' => '従業員番号',
 			'cn' => '氏名',
 			'title' => '役職',
-			'email' => 'Email',
+			'email' => 'メールアドレス',
 			'intel' => '内線',
 			'profile' => '所属',
 		);
