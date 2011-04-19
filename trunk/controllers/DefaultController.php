@@ -43,16 +43,23 @@ class DefaultController extends Controller
 
 					$user=MUser::model()->find('LOWER(username)=?',array(strtolower($form->username)));
 					if ($user->attributes['jn'] == null) {
-					  // if no jn
+					  // if no jn (2)
+						$form->attributes = $user->attributes;
+						$form->password = null;
+
 						$this->state = self::REGISTRATION_STATE;
 
 					} else {
+					  // (1)
 						$this->redirect(Yii::app()->user->returnUrl);
 					}
 				} else if ($form->errorCode == MUserIdentity::USER_TO_BE_REGISTERED) {
-				  // no user found
+				  // no user found (4)
 					$this->state = self::REGISTRATION_STATE;
 
+				} else {
+				  // password error (3)
+					$this->state = self::LOGIN_STATE;
 				}
 			} else {
 			  // register
@@ -62,7 +69,7 @@ class DefaultController extends Controller
 				}
 				
 				if ($getInfo) {
-				  // information query from JN
+				  // information query from JN (5)
 					$model = new MLdap;
 					$model->attributes = $_POST['MLoginForm'];
 
@@ -77,39 +84,31 @@ class DefaultController extends Controller
 				} else {
 				  // submit for registration
 					$form->scenario='register';
+
 					if($form->validate()) {
 						$user=MUser::model()->find('LOWER(username)=?',array(strtolower($form->username)));
-
 						if (isset($user->username)) {
-						  // update
-							$duration=$form->rememberMe ? 3600*24*30 : 0; // 30 days
+						  // update (6)
 							$user->attributes = $form->attributes;
 							$user->password = md5($user->password);
 							$user->update();
-							
-							$identity = new MUserIdentity($form->username,$form->password);
-							$identity->authenticate();
-							Yii::app()->user->login($identity, $duration);
-							
-							$this->redirect(Yii::app()->user->returnUrl);
 						} else {
-						  // save
-							$duration=$form->rememberMe ? 3600*24*30 : 0; // 30 days
+						  // save (7)
 							$user = new MUser;
 							$user->attributes = $form->attributes;
 							$user->password = md5($user->password);
 							$user->save();
-							
-							$identity = new MUserIdentity($form->username,$form->password);
-							$identity->authenticate();
-							Yii::app()->user->login($identity, $duration);
-							
-							$this->redirect(Yii::app()->user->returnUrl);
 						}
+						$identity = new MUserIdentity($form->username,$form->password);
+						$identity->authenticate();
+						$duration=$form->rememberMe ? 3600*24*30 : 0; // 30 days
+						Yii::app()->user->login($identity, $duration);
+							
+						$this->redirect(Yii::app()->user->returnUrl);
 						
 					} else {
-					  // password error
-					  $this->state = self::REGISTRATION_STATE;
+					  // password error (8)
+						$this->state = self::REGISTRATION_STATE;
 					}
 				}
 			}
