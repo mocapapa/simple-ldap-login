@@ -94,15 +94,18 @@ table.dataGrid th
 }
 '); ?>
 
-<?php $i = 0; ?>
+<?php
+  $i = 0;
+  $user = new MUser;
+?>
 <table class="dataGrid">
   <tr>
     <th><?php echo 'Id'; ?></th>
-    <th><?php echo 'アカウント'; ?></th>
-    <th><?php echo '氏名'; ?></th>
-    <th><?php echo 'メールアドレス'; ?></th>
-    <th><?php echo '所属'; ?></th>
-    <th><?php echo '内線'; ?></th>
+    <th><?php echo CHtml::activeLabel($user,'username'); ?></th>
+    <th><?php echo CHtml::activeLabel($user,'cn'); ?></th>
+    <th><?php echo CHtml::activeLabel($user,'email'); ?></th>
+    <th><?php echo CHtml::activeLabel($user,'profile'); ?></th>
+    <th><?php echo CHtml::activeLabel($user,'intel'); ?></th>
   </tr>
 <?php foreach($users as $user): ?>
   <tr class="<?php echo $i++%2?'even':'odd';?>">
