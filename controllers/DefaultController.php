@@ -59,13 +59,12 @@ class DefaultController extends Controller
 
 				} else {
 				  // password error (3)
-					$this->state = self::LOGIN_STATE;
 				}
 			} else {
 			  // register
 				$getInfo = 0;
 				foreach ($_POST as $key=>$val) {
-					if ($val == 'Get info') $getInfo = true;
+					if ($val == Yii::app()->params['getInfo']) $getInfo = true;
 				}
 				
 				if ($getInfo) {
@@ -142,7 +141,7 @@ class DefaultController extends Controller
 		$this->redirect(Yii::app()->homeUrl);
 	}
 
-        // helper functions
+	// helper functions
 
 	private function getCachedLdap($key)
 	{
