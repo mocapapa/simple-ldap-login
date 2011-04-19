@@ -47,6 +47,7 @@ class MLoginForm extends CFormModel
 			'id' => 'ID',
 			'username' => 'ユーザ名',
 			'password' => 'パスワード',
+			'passwordRepeat' => 'パスワード繰返し',
 			'jn' => '従業員番号',
 			'cn' => '氏名',
 			'title' => '役職',
